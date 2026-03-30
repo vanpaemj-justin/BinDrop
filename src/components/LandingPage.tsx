@@ -88,7 +88,7 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
                 onClick={onAdminClick}
                 className="text-gray-600 hover:text-gray-900 text-sm font-medium px-3 py-2 rounded hover:bg-gray-100 transition-colors"
               >
-                Admin
+                Login
               </button>
             )}
           </div>
