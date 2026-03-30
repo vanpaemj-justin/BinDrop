@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Package as PackageType } from '../lib/database.types';
 import { supabase } from '../lib/supabase';
-import { Phone, MapPin, CheckCircle } from 'lucide-react';
+import { Phone, MapPin, CheckCircle, ChevronDown } from 'lucide-react';
 
 interface LandingPageProps {
   onStartBooking: () => void;
@@ -11,6 +11,7 @@ interface LandingPageProps {
 export default function LandingPage({ onStartBooking, onAdminClick }: LandingPageProps) {
   const [packages, setPackages] = useState<PackageType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   useEffect(() => {
     loadPackages();
@@ -29,6 +30,37 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
     }
     setLoading(false);
   };
+
+  const faqs = [
+    {
+      question: 'What are Moving Bins or What is BinDrop?',
+      answer: "BinDrop makes moving simple. We deliver durable, reusable moving bins (aka moving totes, crates, boxes, etc) right to your door! This way, you can skip the cardboard, broken boxes, tape, and extra trips for packaging at the worst times. When you're done, we pick everything up. No mess, no waste, no hassle. It's just an easier way to move."
+    },
+    {
+      question: 'How do delivery and pickup work?',
+      answer: "We deliver clean, reusable moving bins and a dolly to your preferred address at your scheduled delivery time. After your move is complete, we pick everything up from your chosen location."
+    },
+    {
+      question: 'What if I need the bins longer than 4 weeks?',
+      answer: 'Email us for custom pricing.'
+    },
+    {
+      question: 'Do I need to clean the bins before pickup?',
+      answer: 'Please just remove any trash or personal items from your bins before we pick up. Damaged or destroyed bins will incur an additional service charge.'
+    },
+    {
+      question: 'What areas do you deliver to?',
+      answer: "We're currently serving the greater Grand Rapids, Michigan area – Grand Rapids + 50 miles including areas in Kent, Ottawa, Allegan, Barry, Ionia, Newaygo, Montcalm, and Muskegon counties."
+    },
+    {
+      question: 'How big are the bins?',
+      answer: 'Our bins are 25" x 15" x 11" and hold 17 gallons. Roomy enough for books, kitchen items, and everyday household goods, yet easy enough to stack and carry (or wheel on our included dolly!)'
+    },
+    {
+      question: 'How far in advance do I need to book?',
+      answer: "Booking ahead ensures we have your totes ready and waiting. Rentals of 20–40 totes can be reserved as little as 48 hours before your delivery date (based on availability), while orders of 55 or more totes require a minimum of 4 days' notice. If your move date is flexible, we recommend booking as soon as you know it. Once received, we'll confirm your order with you as soon possible."
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -171,6 +203,37 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
               <h4 className="font-semibold text-lg mb-2">Time-Saving</h4>
               <p className="text-gray-600">Delivered and picked up on your schedule</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h3 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h3>
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+              >
+                <button
+                  onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                >
+                  <span className="font-semibold text-gray-900 pr-4">{faq.question}</span>
+                  <ChevronDown
+                    className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform ${
+                      openFaqIndex === index ? 'transform rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {openFaqIndex === index && (
+                  <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                    <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </section>
