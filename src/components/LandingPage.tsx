@@ -68,10 +68,11 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">BD</span>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900">BinDrop</h1>
+              <img
+                src="/ChatGPT_Image_Mar_30,_2026,_10_40_04_AM.png"
+                alt="BinDrop Logo"
+                className="h-10 w-auto"
+              />
             </div>
             <div className="flex items-center space-x-6 text-sm text-gray-600">
               <div className="flex items-center space-x-2">

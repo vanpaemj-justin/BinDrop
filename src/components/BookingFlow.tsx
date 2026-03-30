@@ -136,7 +136,11 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-3xl font-bold text-gray-900">Book Your Bins</h2>
+              <img
+                src="/ChatGPT_Image_Mar_30,_2026,_10_40_04_AM.png"
+                alt="BinDrop Logo"
+                className="h-10 w-auto"
+              />
               <button
                 onClick={onCancel}
                 className="text-gray-500 hover:text-gray-700"
