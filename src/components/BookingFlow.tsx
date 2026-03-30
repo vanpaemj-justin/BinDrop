@@ -181,6 +181,16 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
                     <h4 className="text-xl font-bold text-gray-900 mb-2">{pkg.name}</h4>
                     <div className="text-gray-600 mb-4">
                       <p className="font-semibold">{pkg.num_totes} Bins</p>
+                      {pkg.features && pkg.features.length > 0 && (
+                        <div className="mt-2 space-y-1">
+                          {pkg.features.map((feature, idx) => (
+                            <p key={idx} className="text-sm text-green-600 flex items-center">
+                              <CheckCircle className="w-4 h-4 mr-1" />
+                              Includes {feature}
+                            </p>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div className="space-y-3">
                       {Object.entries(pkg.duration_options || {}).map(([key, option]) => (

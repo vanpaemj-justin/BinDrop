@@ -14,6 +14,7 @@ export interface Database {
           num_totes: number;
           rental_weeks: number;
           duration_options: Record<string, DurationOption>;
+          features: string[];
           created_at: string;
         };
         Insert: {
@@ -23,6 +24,7 @@ export interface Database {
           num_totes: number;
           rental_weeks?: number;
           duration_options?: Record<string, DurationOption>;
+          features?: string[];
           created_at?: string;
         };
         Update: {
@@ -32,6 +34,7 @@ export interface Database {
           num_totes?: number;
           rental_weeks?: number;
           duration_options?: Record<string, DurationOption>;
+          features?: string[];
           created_at?: string;
         };
       };
