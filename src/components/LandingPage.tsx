@@ -69,9 +69,9 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <img
-                src="/ChatGPT_Image_Mar_30,_2026,_10_40_04_AM.png"
+                src="/BinDrop_storage_logo_design.png"
                 alt="BinDrop Logo"
-                className="h-10 w-auto"
+                className="h-16 w-auto"
               />
             </div>
             <div className="flex items-center space-x-6 text-sm text-gray-600">
@@ -97,6 +97,13 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
       </header>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+        <div className="mb-12 flex justify-center">
+          <img
+            src="/BinDrop_storage_logo_design.png"
+            alt="BinDrop Logo"
+            className="h-48 w-auto"
+          />
+        </div>
         <h2 className="text-5xl font-bold text-gray-900 mb-6">
           Moving Made Simple with Reusable Bins
         </h2>

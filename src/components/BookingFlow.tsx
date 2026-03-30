@@ -137,9 +137,9 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <img
-                src="/ChatGPT_Image_Mar_30,_2026,_10_40_04_AM.png"
+                src="/BinDrop_storage_logo_design.png"
                 alt="BinDrop Logo"
-                className="h-10 w-auto"
+                className="h-16 w-auto"
               />
               <button
                 onClick={onCancel}
