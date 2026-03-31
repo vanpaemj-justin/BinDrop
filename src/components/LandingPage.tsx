@@ -108,7 +108,7 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
           Moving Made Simple with Reusable Bins
         </h2>
         <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-          Skip the cardboard boxes. BinDrop delivers sturdy, eco-friendly moving bins right to your door.
+          Skip the cardboard boxes. BinDrop delivers sturdy, stackable moving bins right to your door.
           Pack at your pace, move with ease, and we'll pick them up when you're done.
         </p>
         <button
