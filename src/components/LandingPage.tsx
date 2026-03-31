@@ -196,20 +196,20 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
           <h3 className="text-3xl font-bold text-center mb-12">Why Choose BinDrop?</h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
-              <h4 className="font-semibold text-lg mb-2">Eco-Friendly</h4>
-              <p className="text-gray-600">Reusable bins reduce cardboard waste</p>
+              <h4 className="font-semibold text-lg mb-2">Convenient</h4>
+              <p className="text-gray-600">No assembly, taping, or shopping required</p>
             </div>
             <div>
               <h4 className="font-semibold text-lg mb-2">Durable & Secure</h4>
               <p className="text-gray-600">Heavy-duty bins with attached lids</p>
             </div>
             <div>
-              <h4 className="font-semibold text-lg mb-2">Convenient</h4>
-              <p className="text-gray-600">No assembly, taping, or shopping required</p>
-            </div>
-            <div>
               <h4 className="font-semibold text-lg mb-2">Time-Saving</h4>
               <p className="text-gray-600">Delivered and picked up on your schedule</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-lg mb-2">Eco-Friendly</h4>
+              <p className="text-gray-600">Reusable bins reduce cardboard waste</p>
             </div>
           </div>
         </div>
