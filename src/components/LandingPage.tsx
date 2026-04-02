@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Package as PackageType } from '../lib/database.types';
 import { supabase } from '../lib/supabase';
-import { Phone, MapPin, CheckCircle, ChevronDown, Truck, Package, UserX } from 'lucide-react';
+import { Phone, MapPin, CheckCircle, ChevronDown, Truck, Package, UserX, X } from 'lucide-react';
 
 interface LandingPageProps {
   onStartBooking: () => void;
@@ -167,6 +167,12 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
                 <h4 className="text-2xl font-bold text-gray-900 mb-3">{pkg.name}</h4>
                 <div className="text-gray-600 mb-6">
                   <p className="text-lg font-semibold">{pkg.num_totes} Bins</p>
+                  {pkg.name === 'Studio' && (
+                    <p className="text-sm text-red-600 flex items-center mt-1">
+                      <X className="w-4 h-4 mr-1" />
+                      Does NOT Include Moving Dolly
+                    </p>
+                  )}
                   {pkg.features && pkg.features.length > 0 && (
                     <div className="mt-2 space-y-1">
                       {pkg.features.map((feature, idx) => (
