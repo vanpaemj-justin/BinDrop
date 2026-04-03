@@ -206,7 +206,7 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
           </div>
           <div className="text-center">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 relative">
-              <UserX className="w-8 h-8 text-blue-600" />
+              <img src="/689817-200.png" alt="Dolly" className="w-8 h-8" />
               <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                 3
               </div>
