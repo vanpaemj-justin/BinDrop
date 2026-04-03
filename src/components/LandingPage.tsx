@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Package as PackageType } from '../lib/database.types';
 import { supabase } from '../lib/supabase';
-import { Phone, MapPin, CheckCircle, ChevronDown, Truck, Package, UserX, X } from 'lucide-react';
+import { Phone, MapPin, CheckCircle, ChevronDown, Truck, Package, UserX, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface LandingPageProps {
   onStartBooking: () => void;
@@ -12,6 +12,27 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
   const [packages, setPackages] = useState<PackageType[]>([]);
   const [loading, setLoading] = useState(true);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const carouselImages = [
+    '/bindrop_cleaned_(1).png',
+    '/Screenshot_2026-04-03_093001.png',
+    '/Screenshot_2026-04-03_091745.png',
+    '/Screenshot_2026-04-03_091715.png'
+  ];
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
+  };
+
+  useEffect(() => {
+    const timer = setInterval(nextSlide, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     loadPackages();
@@ -97,12 +118,54 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
       </header>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-        <div className="mb-12 flex justify-center">
-          <img
-            src="/BinDrop_storage_logo_design.png"
-            alt="BinDrop Logo"
-            className="h-48 w-auto"
-          />
+        <div className="mb-12 relative group">
+          <div className="relative h-64 md:h-96 overflow-hidden rounded-2xl shadow-2xl bg-white">
+            {carouselImages.map((image, index) => (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-opacity duration-700 flex items-center justify-center p-8 ${
+                  index === currentSlide ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
+                <img
+                  src={image}
+                  alt={`BinDrop ${index + 1}`}
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
+            ))}
+
+            <button
+              onClick={prevSlide}
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft className="w-6 h-6 text-gray-800" />
+            </button>
+
+            <button
+              onClick={nextSlide}
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100"
+              aria-label="Next slide"
+            >
+              <ChevronRight className="w-6 h-6 text-gray-800" />
+            </button>
+
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+              {carouselImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    index === currentSlide
+                      ? 'bg-blue-600 w-8'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
         <h2 className="text-5xl font-bold text-gray-900 mb-6">
           Moving Made Simple with Reusable Bins
