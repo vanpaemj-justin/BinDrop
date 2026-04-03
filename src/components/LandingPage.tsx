@@ -90,7 +90,7 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <img
-                src="/BinDrop_storage_logo_design.png"
+                src="/bindrop_cleaned_(1).png"
                 alt="BinDrop Logo"
                 className="h-16 w-auto"
               />
