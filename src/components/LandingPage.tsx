@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Package as PackageType } from '../lib/database.types';
-import { supabase } from '../lib/supabase';
-import { Phone, MapPin, CheckCircle, ChevronDown, Truck, Package, UserX, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { packages, Package } from '../lib/packages';
+import { Phone, MapPin, CheckCircle, ChevronDown, Truck, Package as PackageIcon, ArrowRight, X, Menu } from 'lucide-react';
+import BookingFlow from './BookingFlow';
 
 interface LandingPageProps {
   onStartBooking: () => void;
@@ -9,313 +9,376 @@ interface LandingPageProps {
 }
 
 export default function LandingPage({ onStartBooking, onAdminClick }: LandingPageProps) {
-  const [packages, setPackages] = useState<PackageType[]>([]);
+  const [packagesData, setPackagesData] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  const carouselImages = [
-    '/bindrop_cleaned_(1).png',
-    '/Screenshot_2026-04-03_093001.png',
-    '/Screenshot_2026-04-03_091745.png',
-    '/Screenshot_2026-04-03_091715.png'
-  ];
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
-  };
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(nextSlide, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    loadPackages();
-  }, []);
-
-  const loadPackages = async () => {
-    const { data, error } = await supabase
-      .from('packages')
-      .select('*')
-      .order('price', { ascending: true });
-
-    if (error) {
-      console.error('Error loading packages:', error);
-    } else {
-      setPackages(data || []);
-    }
+    setPackagesData(packages);
     setLoading(false);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setMobileMenuOpen(false);
   };
 
   const faqs = [
     {
-      question: 'What are Moving Bins or What is BinDrop?',
-      answer: "BinDrop makes moving simple. We deliver durable, reusable moving bins (aka moving totes, crates, boxes, etc) right to your door! This way, you can skip the cardboard, broken boxes, tape, and extra trips for packaging at the worst times. When you're done, we pick everything up. No mess, no waste, no hassle. It's just an easier way to move."
+      question: 'What are moving bins?',
+      answer: "Moving bins are durable, reusable plastic containers that replace cardboard boxes. They're stackable, easy to carry, and we pick them up when you're done. No taping, no assembly, no mess."
     },
     {
-      question: 'How do delivery and pickup work?',
-      answer: "We deliver clean, reusable moving bins and a dolly to your preferred address at your scheduled delivery time. After your move is complete, we pick everything up from your chosen location."
+      question: 'How does delivery and pickup work?',
+      answer: "We deliver your bins on your scheduled date. After your move, we pick them up from your new location. It's that simple—no driving to return boxes."
     },
     {
-      question: 'What if I need the bins longer than 4 weeks?',
-      answer: 'Email us for custom pricing.'
+      question: 'What if I need bins longer than 4 weeks?',
+      answer: 'Contact us for extended rentals. We offer flexible terms for longer moves.'
     },
     {
       question: 'Do I need to clean the bins before pickup?',
-      answer: 'Please just remove any trash or personal items from your bins before we pick up. Damaged or destroyed bins will incur an additional service charge.'
+      answer: 'Just remove personal items and any trash. We handle the cleaning—bins are sanitized between every rental.'
     },
     {
-      question: 'What areas do you deliver to?',
-      answer: "We're currently serving the greater Grand Rapids, Michigan area – Grand Rapids + 50 miles including areas in Kent, Ottawa, Allegan, Barry, Ionia, Newaygo, Montcalm, and Muskegon counties."
+      question: 'What areas do you serve?',
+      answer: 'Greater Grand Rapids area + 50 miles—including Kent, Ottawa, Allegan, Barry, Ionia, and Montcalm counties.'
     },
-    {
-      question: 'How big are the bins?',
-      answer: 'Our bins are 25" x 15" x 11" and hold 17 gallons. Roomy enough for books, kitchen items, and everyday household goods, yet easy enough to stack and carry (or wheel on our included dolly!)'
-    },
-    {
-      question: 'How far in advance do I need to book?',
-      answer: "Booking ahead ensures we have your totes ready and waiting. Rentals of 20–40 totes can be reserved as little as 48 hours before your delivery date (based on availability), while orders of 55 or more totes require a minimum of 4 days' notice. If your move date is flexible, we recommend booking as soon as you know it. Once received, we'll confirm your order with you as soon possible."
-    }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <img
-                src="/bindrop_cleaned_(1).png"
-                alt="BinDrop Logo"
-                className="h-16 w-auto"
-              />
-            </div>
-            <div className="flex items-center space-x-6 text-sm text-gray-600">
-              <div className="flex items-center space-x-2">
-                <Phone className="w-4 h-4" />
-                <span className="font-medium">586-436-0315</span>
-              </div>
-              <div className="hidden md:flex items-center space-x-2">
-                <MapPin className="w-4 h-4" />
-                <span>Grand Rapids, MI + 50 miles</span>
-              </div>
-            </div>
-            {onAdminClick && (
-              <button
-                onClick={onAdminClick}
-                className="text-gray-600 hover:text-gray-900 text-sm font-medium px-3 py-2 rounded hover:bg-gray-100 transition-colors"
+    <div className="min-h-screen bg-white">
+      {/* Booking Modal */}
+      {showBookingModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="fixed inset-0 bg-black/50" onClick={() => setShowBookingModal(false)} />
+          <div className="relative min-h-screen flex items-center justify-center p-4">
+            <div className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <button 
+                onClick={() => setShowBookingModal(false)}
+                className="absolute top-4 right-4 z-10 p-2 hover:bg-gray-100 rounded-full"
               >
-                Login
+                <X className="w-6 h-6" />
               </button>
-            )}
+              <BookingFlow onCancel={() => setShowBookingModal(false)} />
+            </div>
           </div>
         </div>
-      </header>
+      )}
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-        <div className="mb-12 relative group">
-          <div className="relative h-64 md:h-96 overflow-hidden rounded-2xl shadow-2xl bg-white">
-            {carouselImages.map((image, index) => (
-              <div
-                key={index}
-                className={`absolute inset-0 transition-opacity duration-700 flex items-center justify-center p-8 ${
-                  index === currentSlide ? 'opacity-100' : 'opacity-0'
-                }`}
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold font-heading text-brand-900">
+                Bin<span className="text-brand-600">Drop</span>
+              </span>
+            </div>
+
+            {/* Desktop Nav */}
+            <nav className="hidden md:flex items-center gap-8">
+              <button onClick={() => scrollToSection('how-it-works')} className="text-gray-600 hover:text-brand-900 font-medium">
+                How It Works
+              </button>
+              <button onClick={() => scrollToSection('pricing')} className="text-gray-600 hover:text-brand-900 font-medium">
+                Pricing
+              </button>
+              <button onClick={() => scrollToSection('realtors')} className="text-gray-600 hover:text-brand-900 font-medium">
+                Realtors
+              </button>
+              <button onClick={() => scrollToSection('faq')} className="text-gray-600 hover:text-brand-900 font-medium">
+                FAQs
+              </button>
+              <button 
+                onClick={() => setShowBookingModal(true)}
+                className="bg-brand-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-brand-700 transition-colors"
               >
-                <img
-                  src={image}
-                  alt={`BinDrop ${index + 1}`}
-                  className="max-h-full max-w-full object-contain"
-                />
-              </div>
-            ))}
+                Check Availability
+              </button>
+            </nav>
 
-            <button
-              onClick={prevSlide}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100"
-              aria-label="Previous slide"
+            {/* Mobile Menu Button */}
+            <button 
+              className="md:hidden p-2"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              <ChevronLeft className="w-6 h-6 text-gray-800" />
+              <Menu className="w-6 h-6" />
             </button>
-
-            <button
-              onClick={nextSlide}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100"
-              aria-label="Next slide"
-            >
-              <ChevronRight className="w-6 h-6 text-gray-800" />
-            </button>
-
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
-              {carouselImages.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-2.5 h-2.5 rounded-full transition-all ${
-                    index === currentSlide
-                      ? 'bg-blue-600 w-8'
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-        <h2 className="text-5xl font-bold text-gray-900 mb-6">
-          Moving Made Simple with Reusable Bins
-        </h2>
-        <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-          Skip the cardboard boxes. BinDrop delivers sturdy, stackable moving bins right to your door.
-          Pack at your pace, move with ease, and we'll pick them up when you're done.
-        </p>
-        <button
-          onClick={onStartBooking}
-          className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg"
-        >
-          Book Your Bins Now
-        </button>
-      </section>
-
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 relative">
-              <Truck className="w-8 h-8 text-blue-600" />
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                1
-              </div>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">We Deliver</h3>
-            <p className="text-gray-600">Bins delivered to your door on your schedule</p>
-          </div>
-          <div className="text-center">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 relative">
-              <Package className="w-8 h-8 text-blue-600" />
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                2
-              </div>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">You Pack & Move</h3>
-            <p className="text-gray-600">Keep bins for 2-4 weeks to pack at your pace</p>
-          </div>
-          <div className="text-center">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 relative">
-              <img src="/689817-200.png" alt="Dolly" className="w-8 h-8" />
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                3
-              </div>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">We Pick Up</h3>
-            <p className="text-gray-600">We collect empty bins from your new place</p>
           </div>
         </div>
 
-        <h3 className="text-3xl font-bold text-center mb-12">Choose Your Package</h3>
-
-        {loading ? (
-          <div className="text-center py-12">Loading packages...</div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {packages.map((pkg) => (
-              <div
-                key={pkg.id}
-                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow p-8 border-2 border-gray-100 hover:border-blue-500"
-              >
-                <h4 className="text-2xl font-bold text-gray-900 mb-3">{pkg.name}</h4>
-                <div className="text-gray-600 mb-6">
-                  <p className="text-lg font-semibold">{pkg.num_totes} Bins</p>
-                  {pkg.name === 'Studio' && (
-                    <p className="text-sm text-red-600 flex items-center mt-1">
-                      <X className="w-4 h-4 mr-1" />
-                      Does NOT Include Moving Dolly
-                    </p>
-                  )}
-                  {pkg.features && pkg.features.length > 0 && (
-                    <div className="mt-2 space-y-1">
-                      {pkg.features.map((feature, idx) => (
-                        <p key={idx} className="text-sm text-green-600 flex items-center">
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Includes {feature}
-                        </p>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className="space-y-3 mb-6">
-                  {Object.entries(pkg.duration_options || {}).map(([key, option]) => (
-                    <div key={key} className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-gray-700">{option.weeks} weeks</span>
-                        <span className="text-xl font-bold text-blue-600">${option.price}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  onClick={onStartBooking}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                >
-                  Select Package
-                </button>
-              </div>
-            ))}
+        {/* Mobile Nav */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-3">
+            <button onClick={() => scrollToSection('how-it-works')} className="block w-full text-left py-2 text-gray-600">
+              How It Works
+            </button>
+            <button onClick={() => scrollToSection('pricing')} className="block w-full text-left py-2 text-gray-600">
+              Pricing
+            </button>
+            <button onClick={() => scrollToSection('realtors')} className="block w-full text-left py-2 text-gray-600">
+              Realtors
+            </button>
+            <button onClick={() => scrollToSection('faq')} className="block w-full text-left py-2 text-gray-600">
+              FAQs
+            </button>
+            <button 
+              onClick={() => setShowBookingModal(true)}
+              className="w-full bg-brand-600 text-white px-5 py-3 rounded-lg font-semibold"
+            >
+              Check Availability
+            </button>
           </div>
         )}
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-b from-brand-50 to-white py-20 lg:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold font-heading text-brand-900 mb-6">
+            No Boxes. No Tape.<br className="hidden sm:block" /> Just Move.
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10">
+            We deliver reusable moving bins to your door—and pick them up when you're done. 
+            Save hours of time and skip the mess of cardboard.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button 
+              onClick={() => setShowBookingModal(true)}
+              className="bg-brand-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-brand-700 transition-colors shadow-lg"
+            >
+              Check Availability
+              <ArrowRight className="inline ml-2 w-5 h-5" />
+            </button>
+            <button 
+              onClick={() => scrollToSection('how-it-works')}
+              className="border border-gray-300 text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 transition-colors"
+            >
+              Learn More
+            </button>
+          </div>
+        </div>
       </section>
 
-      <section className="bg-gray-50 py-16 mt-16">
+      {/* 3-Step Process */}
+      <section id="how-it-works" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-center mb-12">Why Choose BinDrop?</h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-              <h4 className="font-semibold text-lg mb-2">Convenient</h4>
-              <p className="text-gray-600">No assembly, taping, or shopping required</p>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold font-heading text-brand-900 mb-4">
+              The Easiest Move You'll Ever Make
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Three simple steps. No hassle, no mess.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center p-8">
+              <div className="w-20 h-20 bg-brand-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Truck className="w-10 h-10 text-brand-600" />
+              </div>
+              <h3 className="text-xl font-bold text-brand-900 mb-3">1. We Drop Off</h3>
+              <p className="text-gray-600">
+                We deliver clean, sanitized bins and dollies to your door on your scheduled date.
+              </p>
             </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-2">Durable & Secure</h4>
-              <p className="text-gray-600">Heavy-duty bins with attached lids</p>
+            <div className="text-center p-8">
+              <div className="w-20 h-20 bg-brand-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <PackageIcon className="w-10 h-10 text-brand-600" />
+              </div>
+              <h3 className="text-xl font-bold text-brand-900 mb-3">2. You Pack & Move</h3>
+              <p className="text-gray-600">
+                Stackable bins make packing easy. No tape, no assembly, no mess.
+              </p>
             </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-2">Time-Saving</h4>
-              <p className="text-gray-600">Delivered and picked up on your schedule</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-2">Eco-Friendly</h4>
-              <p className="text-gray-600">Reusable bins reduce cardboard waste</p>
+            <div className="text-center p-8">
+              <div className="w-20 h-20 bg-brand-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-brand-900 mb-3">3. We Pick Up</h3>
+              <p className="text-gray-600">
+                After your move, we pick up all the bins from your new location. That's it.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h3>
+      {/* Benefits */}
+      <section className="py-20 bg-brand-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold font-heading mb-6">
+                Why BinDrop Beats Cardboard
+              </h2>
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <CheckCircle className="w-6 h-6 text-eco-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-lg">No Assembly</h4>
+                    <p className="text-gray-300">Just open and pack. No taping, no breaking down.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <CheckCircle className="w-6 h-6 text-eco-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-lg">Stackable & Durable</h4>
+                    <p className="text-gray-300">Bins stack neatly and protect your belongings better than cardboard.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <CheckCircle className="w-6 h-6 text-eco-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-lg">Eco-Friendly</h4>
+                    <p className="text-gray-300">Reusable bins mean less waste in landfills.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <CheckCircle className="w-6 h-6 text-eco-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-lg">Clean & Sanitized</h4>
+                    <p className="text-gray-300">Every bin is cleaned and sanitized between rentals.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <div className="w-64 h-64 bg-brand-800 rounded-full flex items-center justify-center">
+                <PackageIcon className="w-32 h-32 text-brand-400" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold font-heading text-brand-900 mb-4">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              One price covers everything—bins, delivery, pickup, and 2 weeks rental.
+            </p>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-12">Loading...</div>
+          ) : (
+            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              {packagesData.map((pkg) => (
+                <div
+                  key={pkg.id}
+                  className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-8 border border-gray-100"
+                >
+                  <h4 className="text-2xl font-bold text-brand-900 mb-2">{pkg.name}</h4>
+                  <p className="text-gray-500 mb-4">{pkg.description}</p>
+                  <p className="text-4xl font-bold text-brand-900 mb-6">
+                    ${pkg.pricing['2']}
+                    <span className="text-lg font-normal text-gray-500">/2 weeks</span>
+                  </p>
+                  <div className="space-y-3 mb-8">
+                    {pkg.features.map((feature, idx) => (
+                      <p key={idx} className="text-sm text-gray-600 flex items-center">
+                        <CheckCircle className="w-4 h-4 text-eco-500 mr-2" />
+                        {feature}
+                      </p>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => setShowBookingModal(true)}
+                    className="w-full bg-brand-600 text-white py-3 rounded-lg font-semibold hover:bg-brand-700 transition-colors"
+                  >
+                    Select Package
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <p className="text-center text-gray-500 mt-8">
+            Need a custom quote? <button className="text-brand-600 font-medium">Contact us</button>
+          </p>
+        </div>
+      </section>
+
+      {/* Realtors Section */}
+      <section id="realtors" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold font-heading text-brand-900 mb-4">
+                For Realtors & Property Managers
+              </h2>
+              <p className="text-lg text-gray-600 mb-6">
+                Offer your clients a premium moving experience. Purchase bins for your clients 
+                and we'll handle the rest—we'll even include your branding on the delivery.
+              </p>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center text-gray-600">
+                  <CheckCircle className="w-5 h-5 text-eco-500 mr-3" />
+                  Bulk pricing for realtors
+                </li>
+                <li className="flex items-center text-gray-600">
+                  <CheckCircle className="w-5 h-5 text-eco-500 mr-3" />
+                  Your logo on delivery paperwork
+                </li>
+                <li className="flex items-center text-gray-600">
+                  <CheckCircle className="w-5 h-5 text-eco-500 mr-3" />
+                  Dedicated account manager
+                </li>
+              </ul>
+              <button className="bg-brand-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-800 transition-colors">
+                Get Partner Pricing
+              </button>
+            </div>
+            <div className="bg-brand-50 rounded-2xl p-8">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-brand-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">🏠</span>
+                </div>
+                <h4 className="font-semibold text-lg text-brand-900 mb-2">Moving Clients?</h4>
+                <p className="text-gray-600 text-sm">
+                  Give your clients the gift of an easier move. Purchase bins and we'll deliver 
+                  a seamless experience they won't forget.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="py-20 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold font-heading text-brand-900 mb-12 text-center">
+            Frequently Asked Questions
+          </h2>
+
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
-              >
+              <div key={index} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <button
                   onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  className="w-full px-6 py-4 text-left flex items-center justify-between"
                 >
-                  <span className="font-semibold text-gray-900 pr-4">{faq.question}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform ${
-                      openFaqIndex === index ? 'transform rotate-180' : ''
-                    }`}
-                  />
+                  <span className="font-semibold text-brand-900">{faq.question}</span>
+                  <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFaqIndex === index ? 'rotate-180' : ''}`} />
                 </button>
                 {openFaqIndex === index && (
-                  <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                    <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
+                  <div className="px-6 pb-4 text-gray-600">
+                    {faq.answer}
                   </div>
                 )}
               </div>
@@ -324,10 +387,62 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
         </div>
       </section>
 
-      <footer className="bg-gray-900 text-white py-8 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="mb-2">© 2024 BinDrop. All rights reserved.</p>
-          <p className="text-gray-400">Serving Grand Rapids, MI and surrounding areas (50+ miles)</p>
+      {/* CTA */}
+      <section className="py-20 bg-brand-600">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Ready to Move the Easy Way?
+          </h2>
+          <p className="text-xl text-brand-100 mb-8">
+            Check availability for your move dates today.
+          </p>
+          <button 
+            onClick={() => setShowBookingModal(true)}
+            className="bg-white text-brand-900 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-brand-50 transition-colors shadow-lg"
+          >
+            Check Availability
+          </button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-brand-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <span className="text-2xl font-bold font-heading">
+                Bin<span className="text-brand-400">Drop</span>
+              </span>
+              <p className="mt-4 text-gray-400 text-sm">
+                Making moving easier, one bin at a time.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Quick Links</h4>
+              <ul className="space-y-2 text-gray-400 text-sm">
+                <li><button onClick={() => scrollToSection('how-it-works')} className="hover:text-white">How It Works</button></li>
+                <li><button onClick={() => scrollToSection('pricing')} className="hover:text-white">Pricing</button></li>
+                <li><button onClick={() => scrollToSection('faq')} className="hover:text-white">FAQs</button></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Service Area</h4>
+              <p className="text-gray-400 text-sm flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                Grand Rapids, MI + 50 miles
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Contact</h4>
+              <p className="text-gray-400 text-sm flex items-center gap-2">
+                <Phone className="w-4 h-4" />
+                Get in touch
+              </p>
+            </div>
+          </div>
+          <div className="border-t border-brand-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+            © 2026 BinDrop. All rights reserved.
+          </div>
         </div>
       </footer>
     </div>

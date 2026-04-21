@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Package as PackageType } from '../lib/database.types';
-import { supabase } from '../lib/supabase';
+import { packages, Package } from '../lib/packages';
 import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 
 interface BookingFlowProps {
@@ -22,8 +21,8 @@ interface BookingData {
 
 export default function BookingFlow({ onCancel }: BookingFlowProps) {
   const [step, setStep] = useState(1);
-  const [packages, setPackages] = useState<PackageType[]>([]);
-  const [selectedPackage, setSelectedPackage] = useState<PackageType | null>(null);
+  const [packages, setPackages] = useState<Package[]>([]);
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [bookingData, setBookingData] = useState<BookingData>({
@@ -40,22 +39,12 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
   });
 
   useEffect(() => {
-    loadPackages();
+    // Use local packages instead of Supabase
+    setPackages(packages);
   }, []);
 
-  const loadPackages = async () => {
-    const { data } = await supabase
-      .from('packages')
-      .select('*')
-      .order('price', { ascending: true });
-
-    if (data) {
-      setPackages(data);
-    }
-  };
-
-  const handlePackageSelect = (pkg: PackageType, weeks: number) => {
-    const price = pkg.duration_options[weeks.toString()]?.price || 0;
+  const handlePackageSelect = (pkg: Package, weeks: number) => {
+    const price = pkg.pricing[weeks] || 0;
     setSelectedPackage(pkg);
     setBookingData({
       ...bookingData,
@@ -77,26 +66,15 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
   const handleSubmit = async () => {
     setLoading(true);
 
-    const { error } = await supabase.from('orders').insert({
-      customer_name: bookingData.customerName,
-      customer_email: bookingData.customerEmail,
-      customer_phone: bookingData.customerPhone,
-      delivery_address: bookingData.deliveryAddress,
-      pickup_address: bookingData.pickupAddress,
-      delivery_date: bookingData.deliveryDate,
-      pickup_date: bookingData.pickupDate,
-      package_id: bookingData.packageId,
-      status: 'pending',
-    });
+    // For MVP: Simulate order submission (no database)
+    // In production, you'd integrate with email, database, or order management
+    console.log('Order submitted:', bookingData);
 
-    setLoading(false);
-
-    if (error) {
-      alert('Error submitting order. Please try again.');
-      console.error(error);
-    } else {
+    // Simulate network delay
+    setTimeout(() => {
+      setLoading(false);
       setSubmitted(true);
-    }
+    }, 1000);
   };
 
   if (submitted) {
@@ -197,22 +175,32 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
                       )}
                     </div>
                     <div className="space-y-3">
-                      {Object.entries(pkg.duration_options || {}).map(([key, option]) => (
-                        <button
-                          key={key}
-                          onClick={() => handlePackageSelect(pkg, option.weeks)}
-                          className="w-full text-left bg-blue-50 border-2 border-blue-200 rounded-lg p-4 hover:border-blue-600 hover:bg-blue-100 transition-all"
-                        >
-                          <div className="flex justify-between items-center">
-                            <div>
-                              <span className="font-semibold text-gray-900">{option.weeks} weeks</span>
-                            </div>
-                            <div className="text-2xl font-bold text-blue-600">
-                              ${option.price}
-                            </div>
+                      <button
+                        onClick={() => handlePackageSelect(pkg, 2)}
+                        className="w-full text-left bg-blue-50 border-2 border-blue-200 rounded-lg p-4 hover:border-blue-600 hover:bg-blue-100 transition-all"
+                      >
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <span className="font-semibold text-gray-900">2 weeks</span>
                           </div>
-                        </button>
-                      ))}
+                          <div className="text-2xl font-bold text-blue-600">
+                            ${pkg.pricing['2']}
+                          </div>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() => handlePackageSelect(pkg, 4)}
+                        className="w-full text-left bg-blue-50 border-2 border-blue-200 rounded-lg p-4 hover:border-blue-600 hover:bg-blue-100 transition-all"
+                      >
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <span className="font-semibold text-gray-900">4 weeks</span>
+                          </div>
+                          <div className="text-2xl font-bold text-blue-600">
+                            ${pkg.pricing['4']}
+                          </div>
+                        </div>
+                      </button>
                     </div>
                   </div>
                 ))}
