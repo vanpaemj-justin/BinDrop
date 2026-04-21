@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { packages, Package } from '../lib/packages';
+import { packages as packageData, Package } from '../lib/packages';
 import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 
 interface BookingFlowProps {
@@ -40,7 +40,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
 
   useEffect(() => {
     // Use local packages instead of Supabase
-    setPackages(packages);
+    setPackages(packageData);
   }, []);
 
   const handlePackageSelect = (pkg: Package, weeks: number) => {

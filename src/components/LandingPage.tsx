@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { packages, Package } from '../lib/packages';
+import { packages as packageData, Package } from '../lib/packages';
 import { Phone, MapPin, CheckCircle, ChevronDown, Truck, Package as PackageIcon, ArrowRight, X, Menu } from 'lucide-react';
 import BookingFlow from './BookingFlow';
 
@@ -16,7 +16,7 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
   const [showBookingModal, setShowBookingModal] = useState(false);
 
   useEffect(() => {
-    setPackagesData(packages);
+    setPackagesData(packageData);
     setLoading(false);
   }, []);
 
