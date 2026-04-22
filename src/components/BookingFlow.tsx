@@ -68,7 +68,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
 
     // Submit to Formspree
     try {
-      const response = await fetch('https://formspree.io/f/mbdpwnqy', {
+      const response = await fetch('https://formspree.io/f/xlgaolqq', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
