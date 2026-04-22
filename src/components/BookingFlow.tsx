@@ -229,26 +229,24 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
                         pickupDate: pickupDate.toISOString().split('T')[0]
                       });
                     }}
-                    min={new Date().toISOString().split('T')[0]}
+                    min="2026-05-12"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     required
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Pickup Date (Auto-set to {bookingData.selectedWeeks} weeks after delivery)
+                    Pickup Date (Set to {bookingData.selectedWeeks} weeks after delivery)
                   </label>
                   <input
                     type="date"
                     value={bookingData.pickupDate}
-                    onChange={(e) =>
-                      setBookingData({ ...bookingData, pickupDate: e.target.value })
-                    }
-                    min={bookingData.deliveryDate || new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent bg-gray-50"
-                    required
+                    readOnly
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100"
                   />
-                  <p className="text-sm text-gray-500 mt-1">You can adjust this date if needed</p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Need custom dates? Email us at hello@bindropmoving.com
+                  </p>
                 </div>
                 <div className="flex justify-between">
                   <button
