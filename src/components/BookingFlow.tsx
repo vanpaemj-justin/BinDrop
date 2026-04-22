@@ -66,15 +66,40 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
   const handleSubmit = async () => {
     setLoading(true);
 
-    // For MVP: Simulate order submission (no database)
-    // In production, you'd integrate with email, database, or order management
-    console.log('Order submitted:', bookingData);
+    // Submit to Formspree
+    try {
+      const response = await fetch('https://formspree.io/f/mbdpwnqy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          subject: `New BinDrop Booking - ${bookingData.customerName}`,
+          customerName: bookingData.customerName,
+          customerEmail: bookingData.customerEmail,
+          customerPhone: bookingData.customerPhone,
+          package: selectedPackage?.name,
+          numTotes: selectedPackage?.num_totes,
+          rentalWeeks: bookingData.selectedWeeks,
+          price: bookingData.selectedPrice,
+          deliveryDate: bookingData.deliveryDate,
+          pickupDate: bookingData.pickupDate,
+          deliveryAddress: bookingData.deliveryAddress,
+          pickupAddress: bookingData.pickupAddress,
+        }),
+      });
 
-    // Simulate network delay
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 1000);
+      if (!response.ok) {
+        throw new Error('Form submission failed');
+      }
+
+      console.log('Order submitted:', bookingData);
+    } catch (error) {
+      console.error('Error submitting order:', error);
+    }
+
+    setLoading(false);
+    setSubmitted(true);
   };
 
   if (submitted) {
@@ -220,6 +245,11 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
                     type="date"
                     value={bookingData.deliveryDate}
                     onChange={(e) => {
+                      const selectedDate = new Date(e.target.value);
+                      const minDate = new Date('2026-05-12');
+                      if (selectedDate < minDate) {
+                        return; // Don't allow dates before May 12, 2026
+                      }
                       const deliveryDate = e.target.value;
                       const pickupDate = new Date(deliveryDate);
                       pickupDate.setDate(pickupDate.getDate() + (bookingData.selectedWeeks * 7));
