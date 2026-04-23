@@ -167,6 +167,17 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
         </div>
       </section>
 
+      {/* Moving Photos Carousel */}
+      <section className="py-12 bg-brand-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid md:grid-cols-3 gap-6">
+            <img src="/moving-1.png" alt="Family moving" className="w-full h-64 object-cover rounded-xl shadow-lg" />
+            <img src="/moving-2.png" alt="Moving boxes" className="w-full h-64 object-cover rounded-xl shadow-lg" />
+            <img src="/moving-3.png" alt="Happy move" className="w-full h-64 object-cover rounded-xl shadow-lg" />
+          </div>
+        </div>
+      </section>
+
       {/* 3-Step Process */}
       <section id="how-it-works" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -280,8 +291,13 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
               {packagesData.map((pkg) => (
                 <div
                   key={pkg.id}
-                  className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-8 border border-gray-100"
+                  className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-8 border-2 ${pkg.name === 'Standard' ? 'border-brand-600 relative' : 'border-gray-100'}`}
                 >
+                  {pkg.name === 'Standard' && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                      Most Popular
+                    </div>
+                  )}
                   <h4 className="text-2xl font-bold text-brand-900 mb-2">{pkg.name}</h4>
                   <p className="text-gray-500 mb-4">{pkg.description}</p>
                   <p className="text-4xl font-bold text-brand-900 mb-6">

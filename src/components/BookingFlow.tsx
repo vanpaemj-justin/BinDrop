@@ -139,11 +139,9 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <img
-                src="/BinDrop_storage_logo_design.png"
-                alt="BinDrop Logo"
-                className="h-16 w-auto"
-              />
+              <span className="text-2xl font-bold font-heading text-brand-900">
+                Bin<span className="text-brand-600">Drop</span>
+              </span>
               <button
                 onClick={onCancel}
                 className="text-gray-500 hover:text-gray-700"
@@ -183,8 +181,13 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
                 {packages.map((pkg) => (
                   <div
                     key={pkg.id}
-                    className="bg-white border-2 border-gray-200 rounded-xl p-6"
+                    className={`bg-white border-2 rounded-xl p-6 ${pkg.name === 'Standard' ? 'border-brand-600 relative' : 'border-gray-200'}`}
                   >
+                    {pkg.name === 'Standard' && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                        Most Popular
+                      </div>
+                    )}
                     <h4 className="text-xl font-bold text-gray-900 mb-2">{pkg.name}</h4>
                     <div className="text-gray-600 mb-4">
                       <p className="font-semibold">{pkg.num_totes} Bins</p>
@@ -246,7 +249,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
                     value={bookingData.deliveryDate}
                     onChange={(e) => {
                       const selectedDate = new Date(e.target.value);
-                      const minDate = new Date('2026-05-12');
+                      const minDate = new Date('2026-05-19');
                       if (selectedDate < minDate) {
                         return; // Don't allow dates before May 12, 2026
                       }
@@ -259,7 +262,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
                         pickupDate: pickupDate.toISOString().split('T')[0]
                       });
                     }}
-                    min="2026-05-12"
+                    min="2026-05-19"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     required
                   />
