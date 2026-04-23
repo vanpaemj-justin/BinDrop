@@ -171,7 +171,7 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
       <section className="py-12 bg-brand-50">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-6">
-            <img src="/moving-1.png" alt="Family moving" className="w-full h-64 object-cover rounded-xl shadow-lg" />
+            <img src="/moving-family.png" alt="Happy family moving" className="w-full h-64 object-cover rounded-xl shadow-lg" />
             <img src="/moving-2.png" alt="Moving boxes" className="w-full h-64 object-cover rounded-xl shadow-lg" />
             <img src="/moving-3.png" alt="Happy move" className="w-full h-64 object-cover rounded-xl shadow-lg" />
           </div>
