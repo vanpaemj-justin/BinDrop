@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { packages as packageData, Package } from '../lib/packages';
-import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, CreditCard } from 'lucide-react';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_live_51PPbLTITFfYmVxiqh5K8FGFnezOlmWqeL7jZnCQbDod29cOfRA4Z5B7Br5JL43Kv3KBJHECFVRDVJD2SpMLTLHOg00Jjli92v3');
 
 interface BookingFlowProps {
   onCancel: () => void;
@@ -63,6 +66,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
     setStep(step - 1);
   };
 
+  // Handle the actual form submission
   const handleSubmit = async () => {
     setLoading(true);
 
@@ -100,6 +104,36 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
 
     setLoading(false);
     setSubmitted(true);
+  };
+
+  const handlePayment = async () => {
+    setLoading(true);
+    
+    // For MVP: Redirect to Stripe Checkout using a payment link
+    // In production, you'd create a proper checkout session server-side
+    const packageName = selectedPackage?.name.toLowerCase();
+    const weeks = bookingData.selectedWeeks;
+    
+    // Stripe payment links for each package (would need to be created in Stripe dashboard)
+    // For now, redirect to a generic checkout with the amount
+    const stripe = await stripePromise;
+    if (!stripe) {
+      alert('Payment system unavailable. Please try again.');
+      setLoading(false);
+      return;
+    }
+    
+    // Create a checkout session URL - in production this would be server-side
+    // For MVP, we'll use a redirect-based approach
+    const amount = bookingData.selectedPrice * 100; // cents
+    
+    // Store booking data in sessionStorage for after payment
+    sessionStorage.setItem('bindrop_booking', JSON.stringify(bookingData));
+    sessionStorage.setItem('bindrop_package', JSON.stringify(selectedPackage));
+    
+    // Redirect to Stripe Checkout (this would need a serverless function in production)
+    // For now, show the submit form directly
+    handleSubmit();
   };
 
   if (submitted) {
@@ -151,7 +185,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
             </div>
 
             <div className="flex items-center justify-between">
-              {[1, 2, 3, 4].map((s) => (
+              {[1, 2, 3, 4, 5].map((s) => (
                 <div key={s} className="flex items-center flex-1">
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
@@ -464,11 +498,12 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
                     <span>Back</span>
                   </button>
                   <button
-                    onClick={handleSubmit}
+                    onClick={handlePayment}
                     disabled={loading}
-                    className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                    className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center space-x-2"
                   >
-                    {loading ? 'Submitting...' : 'Confirm Booking'}
+                    <CreditCard className="w-4 h-4" />
+                    <span>{loading ? 'Processing...' : 'Proceed to Payment'}</span>
                   </button>
                 </div>
               </div>
