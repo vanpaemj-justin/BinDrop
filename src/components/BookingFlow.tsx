@@ -3,6 +3,7 @@ import { packages as packageData, Package } from '../lib/packages';
 import { ArrowLeft, ArrowRight, CheckCircle, CreditCard } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 
+// Use only the publishable key in frontend - secret key stays server-side
 const stripePromise = loadStripe('pk_live_51PPbLTITFfYmVxiqh5K8FGFnezOlmWqeL7jZnCQbDod29cOfRA4Z5B7Br5JL43Kv3KBJHECFVRDVJD2SpMLTLHOg00Jjli92v3');
 
 interface BookingFlowProps {
