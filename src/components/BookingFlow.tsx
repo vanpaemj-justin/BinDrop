@@ -221,9 +221,10 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
                           {pkg.features.map((feature, idx) => (
                             <p key={idx} className="text-sm text-green-600 flex items-center">
                               <CheckCircle className="w-4 h-4 mr-1" />
-                              Includes {feature}
+                              {feature}
                             </p>
                           ))}
+                          <p className="text-xs text-gray-400 mt-2">$100 refundable deposit required</p>
                         </div>
                       )}
                     </div>

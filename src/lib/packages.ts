@@ -26,7 +26,6 @@ export const packages: Package[] = [
     features: [
       '15 reusable moving bins',
       'Free delivery & pickup',
-      '2 weeks rental',
     ],
     pricing: {
       '2': 119,
@@ -47,7 +46,6 @@ export const packages: Package[] = [
       '30 reusable moving bins',
       '1 dolly included',
       'Free delivery & pickup',
-      '2 weeks rental',
     ],
     pricing: {
       '2': 169,
@@ -68,7 +66,6 @@ export const packages: Package[] = [
       '45 reusable moving bins',
       '1 dolly included',
       'Free delivery & pickup',
-      '2 weeks rental',
     ],
     pricing: {
       '2': 219,

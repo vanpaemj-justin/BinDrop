@@ -304,7 +304,7 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
                     ${pkg.pricing['2']}
                     <span className="text-lg font-normal text-gray-500">/2 weeks</span>
                   </p>
-                  <p className="text-sm text-gray-400 mb-6">$100 deposit required</p>
+                  <p className="text-xs text-gray-400 mb-6 text-center">$100 refundable deposit required</p>
                   <div className="space-y-3 mb-8">
                     {pkg.features.map((feature, idx) => (
                       <p key={idx} className="text-sm text-gray-600 flex items-center">
