@@ -301,10 +301,12 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
                   <h4 className="text-2xl font-bold text-brand-900 mb-2">{pkg.name}</h4>
                   <p className="text-gray-500 mb-4">{pkg.description}</p>
                   <p className="text-4xl font-bold text-brand-900 mb-1">
-                    ${pkg.pricing['2'] + 50}
+                    ${pkg.pricing['2']}
                     <span className="text-lg font-normal text-gray-500">/2 weeks</span>
                   </p>
-                  <p className="text-sm text-gray-500 mb-6">${pkg.pricing['2']} rental + $100 deposit</p>
+                  <p className="text-sm text-eco-600 mb-6 flex items-center justify-center">
+                    <CheckCircle className="w-4 h-4 mr-1" /> $100 deposit required
+                  </p>
                   <div className="space-y-3 mb-8">
                     {pkg.features.map((feature, idx) => (
                       <p key={idx} className="text-sm text-gray-600 flex items-center">
