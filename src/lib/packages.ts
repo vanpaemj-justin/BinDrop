@@ -43,7 +43,7 @@ export const packages: Package[] = [
     ],
     pricing: {
       '2': 169,
-      '4': 229,
+      '4': 209,
     },
   },
   {
@@ -59,8 +59,8 @@ export const packages: Package[] = [
       '2 weeks rental',
     ],
     pricing: {
-      '2': 229,
-      '4': 309,
+      '2': 219,
+      '4': 259,
     },
   },
 ];
