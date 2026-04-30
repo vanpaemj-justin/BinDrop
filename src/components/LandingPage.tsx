@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { packages as packageData, Package } from '../lib/packages';
-import { Phone, MapPin, CheckCircle, ChevronDown, Truck, Package as PackageIcon, ArrowRight, X, Menu } from 'lucide-react';
+import { Phone, MapPin, CheckCircle, ChevronDown, Truck, Package as PackageIcon, ArrowRight, X, Menu, Mail } from 'lucide-react';
 import BookingFlow from './BookingFlow';
 
 interface LandingPageProps {
@@ -47,7 +47,7 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
     },
     {
       question: 'What areas do you serve?',
-      answer: 'Greater Grand Rapids area + 50 miles—including Kent, Ottawa, Allegan, Barry, Ionia, and Montcalm counties.'
+      answer: 'Grand Rapids, MI + 35 miles'
     },
   ];
 
@@ -280,7 +280,7 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
               Simple, Transparent Pricing
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              One price covers everything—bins, delivery, pickup, and 2 weeks rental.
+              One price covers everything—bins, delivery, pickup, and your choice of 2 weeks or 4 weeks rental
             </p>
           </div>
 
@@ -300,13 +300,11 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
                   )}
                   <h4 className="text-2xl font-bold text-brand-900 mb-2">{pkg.name}</h4>
                   <p className="text-gray-500 mb-4">{pkg.description}</p>
-                  <p className="text-4xl font-bold text-brand-900 mb-1">
+                  <p className="text-4xl font-bold text-brand-900 mb-1 text-center">
                     ${pkg.pricing['2']}
                     <span className="text-lg font-normal text-gray-500">/2 weeks</span>
                   </p>
-                  <p className="text-sm text-eco-600 mb-6 flex items-center justify-center">
-                    <CheckCircle className="w-4 h-4 mr-1" /> $100 deposit required
-                  </p>
+                  <p className="text-sm text-gray-400 mb-6">$100 deposit required</p>
                   <div className="space-y-3 mb-8">
                     {pkg.features.map((feature, idx) => (
                       <p key={idx} className="text-sm text-gray-600 flex items-center">
@@ -327,7 +325,7 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
           )}
 
           <p className="text-center text-gray-500 mt-8">
-            Need a custom quote? <button className="text-brand-600 font-medium">Contact us</button>
+            Need a custom quote? <a href="mailto:bindropmoving@gmail.com" className="text-brand-600 font-medium">Contact us</a>
           </p>
         </div>
       </section>
@@ -448,14 +446,14 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
               <h4 className="font-semibold mb-4">Service Area</h4>
               <p className="text-gray-400 text-sm flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
-                Grand Rapids, MI + 50 miles
+                Grand Rapids, MI + 35 miles
               </p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Contact</h4>
               <p className="text-gray-400 text-sm flex items-center gap-2">
-                <Phone className="w-4 h-4" />
-                Get in touch
+                <Mail className="w-4 h-4" />
+                <a href="mailto:bindropmoving@gmail.com" className="hover:text-white">bindropmoving@gmail.com</a>
               </p>
             </div>
           </div>
