@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, CheckCircle, CreditCard } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 
 // Use only the publishable key in frontend - secret key stays server-side
-const stripePromise = loadStripe('pk_live_51PPbLTITFfYmVxiqh5K8FGFnezOlmWqeL7jZnCQbDod29cOfRA4Z5B7Br5JL43Kv3KBJHECFVRDVJD2SpMLTLHOg00Jjli92v3');
+const stripePromise = loadStripe('pk_live_51TRvC51AU0U7U9qV4Kt8fKLaNuMQstwIEH0zr0C7GGIiU1oFHnXdbCBxzndHSeJeGphwp9H353D4vjNvXombMDwc00Tk3QUfGs');
 
 interface BookingFlowProps {
   onCancel: () => void;
@@ -48,7 +48,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
   }, []);
 
   const handlePackageSelect = (pkg: Package, weeks: number) => {
-    const price = pkg.pricing[weeks] || 0;
+    const price = (pkg.pricing[weeks] || 0) + 50; // + $50 refundable deposit
     setSelectedPackage(pkg);
     setBookingData({
       ...bookingData,
@@ -110,31 +110,21 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
   const handlePayment = async () => {
     setLoading(true);
     
-    // For MVP: Redirect to Stripe Checkout using a payment link
-    // In production, you'd create a proper checkout session server-side
-    const packageName = selectedPackage?.name.toLowerCase();
-    const weeks = bookingData.selectedWeeks;
+    // Redirect to Stripe payment link
+    const weeks = bookingData.selectedWeeks as '2' | '4';
+    const paymentLink = selectedPackage?.paymentLink?.[weeks];
     
-    // Stripe payment links for each package (would need to be created in Stripe dashboard)
-    // For now, redirect to a generic checkout with the amount
-    const stripe = await stripePromise;
-    if (!stripe) {
-      alert('Payment system unavailable. Please try again.');
+    if (paymentLink) {
+      // Store booking data in sessionStorage for reference
+      sessionStorage.setItem('bindrop_booking', JSON.stringify(bookingData));
+      sessionStorage.setItem('bindrop_package', JSON.stringify(selectedPackage));
+      
+      // Redirect to Stripe payment link
+      window.location.href = paymentLink;
+    } else {
+      alert('Payment unavailable. Please try again.');
       setLoading(false);
-      return;
     }
-    
-    // Create a checkout session URL - in production this would be server-side
-    // For MVP, we'll use a redirect-based approach
-    const amount = bookingData.selectedPrice * 100; // cents
-    
-    // Store booking data in sessionStorage for after payment
-    sessionStorage.setItem('bindrop_booking', JSON.stringify(bookingData));
-    sessionStorage.setItem('bindrop_package', JSON.stringify(selectedPackage));
-    
-    // Redirect to Stripe Checkout (this would need a serverless function in production)
-    // For now, show the submit form directly
-    handleSubmit();
   };
 
   if (submitted) {
@@ -150,7 +140,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
             <h3 className="font-semibold text-lg mb-4">Order Summary</h3>
             <div className="space-y-2 text-gray-700">
               <p><span className="font-medium">Package:</span> {selectedPackage?.name} ({bookingData.selectedWeeks} weeks)</p>
-              <p><span className="font-medium">Price:</span> ${bookingData.selectedPrice}</p>
+              <p><span className="font-medium">Total:</span> ${bookingData.selectedPrice} <span className="text-sm text-gray-500">(${bookingData.selectedPrice - 50} rental + $50 deposit)</span></p>
               <p><span className="font-medium">Delivery Date:</span> {new Date(bookingData.deliveryDate).toLocaleDateString()}</p>
               <p><span className="font-medium">Pickup Date:</span> {new Date(bookingData.pickupDate).toLocaleDateString()}</p>
               <p><span className="font-medium">Delivery Address:</span> {bookingData.deliveryAddress}</p>
@@ -454,7 +444,8 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
                       <span className="font-medium">Duration:</span> {bookingData.selectedWeeks} weeks
                     </div>
                     <div>
-                      <span className="font-medium">Price:</span> ${bookingData.selectedPrice}
+                      <span className="font-medium">Total:</span> ${bookingData.selectedPrice} 
+                      <span className="text-sm text-gray-500"> (${bookingData.selectedPrice - 50} rental + $50 refundable deposit)</span>
                     </div>
                     <div>
                       <span className="font-medium">Delivery Date:</span>{' '}
