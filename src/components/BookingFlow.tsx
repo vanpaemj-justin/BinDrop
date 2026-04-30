@@ -48,7 +48,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
   }, []);
 
   const handlePackageSelect = (pkg: Package, weeks: number) => {
-    const price = (pkg.pricing[weeks] || 0) + 50; // + $50 refundable deposit
+    const price = (pkg.pricing[weeks] || 0) + 100; // + $100 refundable deposit
     setSelectedPackage(pkg);
     setBookingData({
       ...bookingData,
@@ -140,7 +140,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
             <h3 className="font-semibold text-lg mb-4">Order Summary</h3>
             <div className="space-y-2 text-gray-700">
               <p><span className="font-medium">Package:</span> {selectedPackage?.name} ({bookingData.selectedWeeks} weeks)</p>
-              <p><span className="font-medium">Total:</span> ${bookingData.selectedPrice} <span className="text-sm text-gray-500">(${bookingData.selectedPrice - 50} rental + $50 deposit)</span></p>
+              <p><span className="font-medium">Total:</span> ${bookingData.selectedPrice} <span className="text-sm text-gray-500">(${bookingData.selectedPrice - 100} rental + $100 deposit)</span></p>
               <p><span className="font-medium">Delivery Date:</span> {new Date(bookingData.deliveryDate).toLocaleDateString()}</p>
               <p><span className="font-medium">Pickup Date:</span> {new Date(bookingData.pickupDate).toLocaleDateString()}</p>
               <p><span className="font-medium">Delivery Address:</span> {bookingData.deliveryAddress}</p>
@@ -445,7 +445,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
                     </div>
                     <div>
                       <span className="font-medium">Total:</span> ${bookingData.selectedPrice} 
-                      <span className="text-sm text-gray-500"> (${bookingData.selectedPrice - 50} rental + $50 refundable deposit)</span>
+                      <span className="text-sm text-gray-500"> (${bookingData.selectedPrice - 100} rental + $100 refundable deposit)</span>
                     </div>
                     <div>
                       <span className="font-medium">Delivery Date:</span>{' '}
