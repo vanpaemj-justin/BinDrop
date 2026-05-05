@@ -284,7 +284,7 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
               Simple, Transparent Pricing
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              One price covers everything—bins, delivery, pickup, and your choice of 2 weeks or 4 weeks rental
+              One price covers everything—bins, delivery, pickup, and your choice in rental period
             </p>
           </div>
 
@@ -317,19 +317,22 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
                       </p>
                     ))}
                   </div>
-                  <button
-                    onClick={() => setShowBookingModal(true)}
-                    className="w-full bg-brand-600 text-white py-3 rounded-lg font-semibold hover:bg-brand-700 transition-colors"
-                  >
-                    Select Package Now
-                  </button>
-                </div>
+                  </div>
               ))}
             </div>
           )}
 
+          <div className="text-center mt-12">
+            <button
+              onClick={() => setShowBookingModal(true)}
+              className="bg-brand-600 text-white px-12 py-4 rounded-lg font-semibold text-lg hover:bg-brand-700 transition-colors"
+            >
+              Select Package Now
+            </button>
+          </div>
+
           <p className="text-center text-gray-500 mt-8">
-            Need a custom quote? <a href="mailto:bindropmoving@gmail.com" className="text-brand-600 font-medium">Contact us</a>
+            2-week pricing shown. 4-week pricing available. Need a custom quote? <a href="mailto:bindropmoving@gmail.com" className="text-brand-600 font-medium">Contact us</a>
           </p>
         </div>
       </section>
