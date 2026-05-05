@@ -49,6 +49,10 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
       question: 'What areas do you serve?',
       answer: 'Grand Rapids, MI + 35 miles'
     },
+    {
+      question: 'What size are the totes?',
+      answer: 'All totes are 27" x 17" x 12" - large enough for household items, books, and kitchen supplies.'
+    },
   ];
 
   return (
@@ -317,7 +321,7 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
                     onClick={() => setShowBookingModal(true)}
                     className="w-full bg-brand-600 text-white py-3 rounded-lg font-semibold hover:bg-brand-700 transition-colors"
                   >
-                    Select Package
+                    Select Package Now
                   </button>
                 </div>
               ))}
