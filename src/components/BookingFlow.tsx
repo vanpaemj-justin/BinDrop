@@ -28,6 +28,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
   const [packages, setPackages] = useState<Package[]>([]);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [loading, setLoading] = useState(false);
+  const [processingPayment, setProcessingPayment] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [bookingData, setBookingData] = useState<BookingData>({
     packageId: '',
@@ -45,6 +46,51 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
   useEffect(() => {
     // Use local packages instead of Supabase
     setPackages(packageData);
+  }, []);
+
+  // Check if returning from successful payment
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentSuccess = urlParams.get('payment_success');
+    
+    if (paymentSuccess === 'true') {
+      // Get booking data from sessionStorage
+      const storedBooking = sessionStorage.getItem('bindrop_booking');
+      const storedPackage = sessionStorage.getItem('bindrop_package');
+      
+      if (storedBooking && storedPackage) {
+        setProcessingPayment(true);
+        const booking = JSON.parse(storedBooking);
+        const pkg = JSON.parse(storedPackage);
+        
+        // Submit to Formspree
+        fetch('https://formspree.io/f/xlgaolqq', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            subject: `New BinDrop Booking - ${booking.customerName}`,
+            customerName: booking.customerName,
+            customerEmail: booking.customerEmail,
+            customerPhone: booking.customerPhone,
+            package: pkg.name,
+            numTotes: pkg.num_totes,
+            rentalWeeks: booking.selectedWeeks,
+            price: booking.selectedPrice,
+            deliveryDate: booking.deliveryDate,
+            pickupDate: booking.pickupDate,
+            deliveryAddress: booking.deliveryAddress,
+            pickupAddress: booking.pickupAddress,
+          }),
+        }).then(() => {
+          // Clear sessionStorage and show success
+          sessionStorage.removeItem('bindrop_booking');
+          sessionStorage.removeItem('bindrop_package');
+          setSubmitted(true);
+        }).catch(() => {
+          setProcessingPayment(false);
+        });
+      }
+    }
   }, []);
 
   const handlePackageSelect = (pkg: Package, weeks: number) => {
@@ -119,13 +165,32 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
       sessionStorage.setItem('bindrop_booking', JSON.stringify(bookingData));
       sessionStorage.setItem('bindrop_package', JSON.stringify(selectedPackage));
       
-      // Redirect to Stripe payment link
-      window.location.href = paymentLink;
+      // Redirect to Stripe payment link with success callback
+      // Add the current URL as the success URL with a query param
+      const baseUrl = window.location.origin + window.location.pathname;
+      const successUrl = `${baseUrl}?payment_success=true`;
+      const paymentLinkWithSuccess = paymentLink.includes('?') 
+        ? `${paymentLink}&success_url=${encodeURIComponent(successUrl)}`
+        : `${paymentLink}?success_url=${encodeURIComponent(successUrl)}`;
+      
+      window.location.href = paymentLinkWithSuccess;
     } else {
       alert('Payment unavailable. Please try again.');
       setLoading(false);
     }
   };
+
+  if (processingPayment) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center p-4">
+        <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-12 text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mx-auto mb-6"></div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Processing Your Order...</h2>
+          <p className="text-gray-600">Please wait while we confirm your booking.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (submitted) {
     return (
