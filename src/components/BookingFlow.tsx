@@ -8,6 +8,7 @@ const stripePromise = loadStripe('pk_live_51TRvC51AU0U7U9qV4Kt8fKLaNuMQstwIEH0zr
 
 interface BookingFlowProps {
   onCancel: () => void;
+  paymentSuccess?: boolean;
 }
 
 interface BookingData {
@@ -23,7 +24,7 @@ interface BookingData {
   pickupAddress: string;
 }
 
-export default function BookingFlow({ onCancel }: BookingFlowProps) {
+export default function BookingFlow({ onCancel, paymentSuccess = false }: BookingFlowProps) {
   const [step, setStep] = useState(1);
   const [packages, setPackages] = useState<Package[]>([]);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
@@ -50,10 +51,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
 
   // Check if returning from successful payment
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const paymentSuccess = urlParams.get('payment_success');
-    
-    if (paymentSuccess === 'true') {
+    if (paymentSuccess) {
       // Get booking data from sessionStorage
       const storedBooking = sessionStorage.getItem('bindrop_booking');
       const storedPackage = sessionStorage.getItem('bindrop_package');
@@ -85,6 +83,8 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
           // Clear sessionStorage and show success
           sessionStorage.removeItem('bindrop_booking');
           sessionStorage.removeItem('bindrop_package');
+          // Clean up URL
+          window.history.replaceState({}, '', window.location.pathname);
           setSubmitted(true);
         }).catch(() => {
           setProcessingPayment(false);
@@ -193,23 +193,29 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
   }
 
   if (submitted) {
+    // Get stored data for display
+    const storedBooking = sessionStorage.getItem('bindrop_booking');
+    const storedPackage = sessionStorage.getItem('bindrop_package');
+    const displayBooking = storedBooking ? JSON.parse(storedBooking) : bookingData;
+    const displayPackage = storedPackage ? JSON.parse(storedPackage) : selectedPackage;
+    
     return (
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center p-4">
         <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-12 text-center">
           <CheckCircle className="w-20 h-20 text-green-600 mx-auto mb-6" />
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Booking Confirmed!</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Payment Received!</h2>
           <p className="text-xl text-gray-600 mb-8">
-            Thank you for choosing BinDrop! We've received your order and will contact you shortly to confirm delivery details.
+            Your bins are on their way! We'll contact you shortly to confirm delivery details.
           </p>
           <div className="bg-blue-50 rounded-lg p-6 mb-8 text-left">
             <h3 className="font-semibold text-lg mb-4">Order Summary</h3>
             <div className="space-y-2 text-gray-700">
-              <p><span className="font-medium">Package:</span> {selectedPackage?.name} ({bookingData.selectedWeeks} weeks)</p>
-              <p><span className="font-medium">Total:</span> ${bookingData.selectedPrice} <span className="text-sm text-gray-500"> + $100 refundable deposit</span></p>
-              <p><span className="font-medium">Delivery Date:</span> {new Date(bookingData.deliveryDate).toLocaleDateString()}</p>
-              <p><span className="font-medium">Pickup Date:</span> {new Date(bookingData.pickupDate).toLocaleDateString()}</p>
-              <p><span className="font-medium">Delivery Address:</span> {bookingData.deliveryAddress}</p>
-              <p><span className="font-medium">Pickup Address:</span> {bookingData.pickupAddress}</p>
+              <p><span className="font-medium">Package:</span> {displayPackage?.name} ({displayBooking.selectedWeeks} weeks)</p>
+              <p><span className="font-medium">Total:</span> ${displayBooking.selectedPrice} <span className="text-sm text-gray-500"> + $100 refundable deposit</span></p>
+              <p><span className="font-medium">Delivery Date:</span> {new Date(displayBooking.deliveryDate).toLocaleDateString()}</p>
+              <p><span className="font-medium">Pickup Date:</span> {new Date(displayBooking.pickupDate).toLocaleDateString()}</p>
+              <p><span className="font-medium">Delivery Address:</span> {displayBooking.deliveryAddress}</p>
+              <p><span className="font-medium">Pickup Address:</span> {displayBooking.pickupAddress}</p>
             </div>
           </div>
           <button

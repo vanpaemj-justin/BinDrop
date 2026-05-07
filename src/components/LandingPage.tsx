@@ -23,8 +23,6 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('payment_success') === 'true') {
       setShowBookingModal(true);
-      // Clean up URL
-      window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
 
@@ -77,7 +75,10 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
               >
                 <X className="w-6 h-6" />
               </button>
-              <BookingFlow onCancel={() => setShowBookingModal(false)} />
+              <BookingFlow 
+                onCancel={() => setShowBookingModal(false)} 
+                paymentSuccess={urlParams.get('payment_success') === 'true'}
+              />
             </div>
           </div>
         </div>
