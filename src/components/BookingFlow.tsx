@@ -86,9 +86,12 @@ export default function BookingFlow({ onCancel, paymentSuccess = false }: Bookin
           sessionStorage.removeItem('bindrop_package');
           // Clean up URL
           window.history.replaceState({}, '', window.location.pathname);
+          setProcessingPayment(false);
           setSubmitted(true);
         }).catch((err) => {
           console.error('Formspree error:', err);
+          setProcessingPayment(false);
+          setSubmitted(true);
         });
         
         // Always show success after a timeout (even if Formspree hangs)
@@ -96,6 +99,7 @@ export default function BookingFlow({ onCancel, paymentSuccess = false }: Bookin
           sessionStorage.removeItem('bindrop_booking');
           sessionStorage.removeItem('bindrop_package');
           window.history.replaceState({}, '', window.location.pathname);
+          setProcessingPayment(false);
           setSubmitted(true);
         }, 3000);
       } else {
@@ -103,6 +107,7 @@ export default function BookingFlow({ onCancel, paymentSuccess = false }: Bookin
         // Show success even without stored data (Stripe already processed payment)
         // Clean up URL
         window.history.replaceState({}, '', window.location.pathname);
+        setProcessingPayment(false);
         setSubmitted(true);
       }
     }
