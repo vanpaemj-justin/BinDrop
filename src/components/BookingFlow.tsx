@@ -89,9 +89,15 @@ export default function BookingFlow({ onCancel, paymentSuccess = false }: Bookin
           setSubmitted(true);
         }).catch((err) => {
           console.error('Formspree error:', err);
-          // Still show success even if Formspree fails (user already paid)
-          setSubmitted(true);
         });
+        
+        // Always show success after a timeout (even if Formspree hangs)
+        setTimeout(() => {
+          sessionStorage.removeItem('bindrop_booking');
+          sessionStorage.removeItem('bindrop_package');
+          window.history.replaceState({}, '', window.location.pathname);
+          setSubmitted(true);
+        }, 3000);
       } else {
         console.log('No stored booking data found - payment still went through');
         // Show success even without stored data (Stripe already processed payment)
