@@ -14,13 +14,13 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const urlParams = new URLSearchParams(window.location.search);
 
   useEffect(() => {
     setPackagesData(packageData);
     setLoading(false);
     
     // Check for payment success return
-    const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('payment_success') === 'true') {
       setShowBookingModal(true);
     }
