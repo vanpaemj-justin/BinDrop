@@ -30,6 +30,7 @@ export default function BookingFlow({ onCancel, paymentSuccess = false }: Bookin
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [loading, setLoading] = useState(false);
   const [processingPayment, setProcessingPayment] = useState(false);
+  const [completedBooking, setCompletedBooking] = useState<{booking: any; package: any} | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [bookingData, setBookingData] = useState<BookingData>({
     packageId: '',
@@ -81,6 +82,8 @@ export default function BookingFlow({ onCancel, paymentSuccess = false }: Bookin
             pickupAddress: booking.pickupAddress,
           }),
         }).then(() => {
+          // Save booking data before clearing
+          setCompletedBooking({ booking, package: pkg });
           // Clear sessionStorage and show success
           sessionStorage.removeItem('bindrop_booking');
           sessionStorage.removeItem('bindrop_package');
@@ -90,12 +93,15 @@ export default function BookingFlow({ onCancel, paymentSuccess = false }: Bookin
           setSubmitted(true);
         }).catch((err) => {
           console.error('Formspree error:', err);
+          // Still save and show success
+          setCompletedBooking({ booking, package: pkg });
           setProcessingPayment(false);
           setSubmitted(true);
         });
         
         // Always show success after a timeout (even if Formspree hangs)
         setTimeout(() => {
+          setCompletedBooking({ booking, package: pkg });
           sessionStorage.removeItem('bindrop_booking');
           sessionStorage.removeItem('bindrop_package');
           window.history.replaceState({}, '', window.location.pathname);
@@ -109,6 +115,7 @@ export default function BookingFlow({ onCancel, paymentSuccess = false }: Bookin
         window.history.replaceState({}, '', window.location.pathname);
         setProcessingPayment(false);
         setSubmitted(true);
+        setCompletedBooking(null);
       }
     }
   }, [paymentSuccess]);
@@ -213,11 +220,9 @@ export default function BookingFlow({ onCancel, paymentSuccess = false }: Bookin
   }
 
   if (submitted) {
-    // Get stored data for display
-    const storedBooking = sessionStorage.getItem('bindrop_booking');
-    const storedPackage = sessionStorage.getItem('bindrop_package');
-    const displayBooking = storedBooking ? JSON.parse(storedBooking) : bookingData;
-    const displayPackage = storedPackage ? JSON.parse(storedPackage) : selectedPackage;
+    // Get stored data for display (prefer completedBooking, fallback to sessionStorage or state)
+    const displayBooking = completedBooking?.booking || bookingData;
+    const displayPackage = completedBooking?.package || selectedPackage;
     
     return (
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center p-4">
