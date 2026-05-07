@@ -32,8 +32,8 @@ export const packages: Package[] = [
       '4': 159,
     },
     paymentLink: {
-      '2': 'https://buy.stripe.com/00w4gr10AaOW6MVd5R5Vu00',
-      '4': 'https://buy.stripe.com/7sYfZ938I5uC4EN1n95Vu01',
+      '2': 'https://buy.stripe.com/aFa9ALaBa8GO7QZ4zl5Vu06',
+      '4': 'https://buy.stripe.com/fZufZ95gQ7CK6MV8PB5Vu07',
     },
   },
   {
@@ -52,8 +52,8 @@ export const packages: Package[] = [
       '4': 209,
     },
     paymentLink: {
-      '2': 'https://buy.stripe.com/8x228j9x69KS3AJ8PB5Vu02',
-      '4': 'https://buy.stripe.com/3cIfZ9gZyg9g0oxaXJ5Vu03',
+      '2': 'https://buy.stripe.com/7sY7sD7oYf5c6MV4zl5Vu08',
+      '4': 'https://buy.stripe.com/6oU4grgZyaOWdbj0j55Vu09',
     },
   },
   {
@@ -72,8 +72,8 @@ export const packages: Package[] = [
       '4': 259,
     },
     paymentLink: {
-      '2': 'https://buy.stripe.com/fZu8wH4cMg9g4ENc1N5Vu04',
-      '4': 'https://buy.stripe.com/14A3cn4cMf5cgnve9V5Vu05',
+      '2': 'https://buy.stripe.com/bJe6ozfVuaOWdbj6Ht5Vu0a',
+      '4': 'https://buy.stripe.com/14A28j10A5uC7QZc1N5Vu0b',
     },
   },
 ];
