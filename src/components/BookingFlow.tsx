@@ -51,6 +51,7 @@ export default function BookingFlow({ onCancel, paymentSuccess = false }: Bookin
 
   // Check if returning from successful payment
   useEffect(() => {
+    console.log('Payment success detected, processing...', paymentSuccess);
     if (paymentSuccess) {
       // Get booking data from sessionStorage
       const storedBooking = sessionStorage.getItem('bindrop_booking');
@@ -86,12 +87,20 @@ export default function BookingFlow({ onCancel, paymentSuccess = false }: Bookin
           // Clean up URL
           window.history.replaceState({}, '', window.location.pathname);
           setSubmitted(true);
-        }).catch(() => {
-          setProcessingPayment(false);
+        }).catch((err) => {
+          console.error('Formspree error:', err);
+          // Still show success even if Formspree fails (user already paid)
+          setSubmitted(true);
         });
+      } else {
+        console.log('No stored booking data found - payment still went through');
+        // Show success even without stored data (Stripe already processed payment)
+        // Clean up URL
+        window.history.replaceState({}, '', window.location.pathname);
+        setSubmitted(true);
       }
     }
-  }, []);
+  }, [paymentSuccess]);
 
   const handlePackageSelect = (pkg: Package, weeks: number) => {
     const price = pkg.pricing[weeks] || 0; // rental price only, deposit charged at checkout
