@@ -18,6 +18,14 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
   useEffect(() => {
     setPackagesData(packageData);
     setLoading(false);
+    
+    // Check for payment success return
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('payment_success') === 'true') {
+      setShowBookingModal(true);
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
   }, []);
 
   const scrollToSection = (id: string) => {
