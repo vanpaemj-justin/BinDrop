@@ -32,7 +32,7 @@ export const packages: Package[] = [
       '4': 159,
     },
     paymentLink: {
-      '2': 'https://buy.stripe.com/00w4gr10AaOW6MVd5R5Vu00',
+      '2': 'https://buy.stripe.com/test_00w4gr10AaOW6MVd5R5Vu00',
       '4': 'https://buy.stripe.com/7sYfZ938I5uC4EN1n95Vu01',
     },
   },
