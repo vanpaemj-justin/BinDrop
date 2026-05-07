@@ -304,7 +304,7 @@ export default function BookingFlow({ onCancel }: BookingFlowProps) {
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100"
                   />
                   <p className="text-sm text-gray-500 mt-2">
-                    Need custom dates? Email us at hello@bindropmoving.com
+                    Need custom dates? Email us at bindropmoving@gmail.com
                   </p>
                 </div>
                 <div className="flex justify-between">
