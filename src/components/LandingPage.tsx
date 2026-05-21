@@ -372,9 +372,12 @@ export default function LandingPage({ onStartBooking, onAdminClick }: LandingPag
                   Dedicated account manager
                 </li>
               </ul>
-              <button className="bg-brand-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-800 transition-colors">
+              <a 
+                href="mailto:bindropmoving@gmail.com?subject=Partner%20Pricing%20Inquiry"
+                className="inline-block bg-brand-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-800 transition-colors"
+              >
                 Get Partner Pricing
-              </button>
+              </a>
             </div>
             <div className="bg-brand-50 rounded-2xl p-8">
               <div className="text-center">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { packages as packageData, Package } from '../lib/packages';
-import { ArrowLeft, ArrowRight, CheckCircle, CreditCard } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, CreditCard, X } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 
 // Use only the publishable key in frontend - secret key stays server-side
@@ -264,10 +264,15 @@ export default function BookingFlow({ onCancel, paymentSuccess = false }: Bookin
                 Bin<span className="text-brand-600">Drop</span>
               </span>
               <button
-                onClick={onCancel}
+                onClick={step === 1 ? onCancel : handleBack}
                 className="text-gray-500 hover:text-gray-700"
+                title={step === 1 ? 'Close' : 'Go back'}
               >
-                <ArrowLeft className="w-6 h-6" />
+                {step === 1 ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <ArrowLeft className="w-6 h-6" />
+                )}
               </button>
             </div>
 
